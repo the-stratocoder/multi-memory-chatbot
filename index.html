@@ -1,18 +1,90 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8" />
-    <title>My Flowise Chatbot</title>
+  <meta charset="UTF-8" />
+  <title>Chatbot Portal</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+    }
+    h1 {
+      text-align: center;
+    }
+    #chatContainer {
+      margin-top: 20px;
+    }
+    #chatOutput {
+      border: 1px solid #ccc;
+      padding: 10px;
+      min-height: 100px;
+      margin-top: 10px;
+      white-space: pre-wrap;
+    }
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to My Flowise Chatbot</h1>
+  <h1>Simple Chatbot Portal</h1>
 
-  <flowise-fullchatbot></flowise-fullchatbot>
-  <script type="module">
-    import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";
-    Chatbot.initFull({
-      chatflowid: "175c6dee-5166-4b24-8e6c-4cd6f2353574",
-      apiHost: "https://ai.voiceerp.com"
+  <div id="chatContainer">
+    <textarea id="userQuestion" rows="3" placeholder="Type your question here..."></textarea>
+    <br>
+    <button id="sendBtn">Send</button>
+
+    <div id="chatOutput"></div>
+  </div>
+
+  <script>
+    // 1. The provided async function to query the chatbot API.
+    async function query(data) {
+      const response = await fetch(
+        "https://ai.voiceerp.com/api/v1/prediction/175c6dee-5166-4b24-8e6c-4cd6f2353574",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        }
+      );
+      const result = await response.json();
+      return result;
+    }
+
+    // 2. Set up event listener to send a query when user clicks "Send"
+    document.getElementById("sendBtn").addEventListener("click", async () => {
+      const userQuestion = document.getElementById("userQuestion").value.trim();
+
+      if (userQuestion === "") {
+        alert("Please type a question first.");
+        return;
+      }
+
+      // Clear the output area before sending
+      const chatOutput = document.getElementById("chatOutput");
+      chatOutput.textContent = "Thinking...";
+
+      try {
+        // Make API call to chatbot
+        const response = await query({
+          question: userQuestion,
+          overrideConfig: {
+            sessionId: "5df3ecd3-a67f-439d-a56f-5281ed00c513",
+          },
+        });
+
+        // Show the response in the chatOutput div
+        chatOutput.textContent = JSON.stringify(response, null, 2);
+      } catch (err) {
+        console.error(err);
+        chatOutput.textContent = "An error occurred while contacting the chatbot.";
+      }
     });
   </script>
 </body>
