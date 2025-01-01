@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>My Flowise Chatbot</title>
+</head>
+<body>
+  <h1>Welcome to My Flowise Chatbot</h1>
+
+  <flowise-fullchatbot></flowise-fullchatbot>
+  <script type="module">
+    import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js";
+    Chatbot.initFull({
+      chatflowid: "175c6dee-5166-4b24-8e6c-4cd6f2353574",
+      apiHost: "https://ai.voiceerp.com"
+    });
+  </script>
+</body>
+</html>
